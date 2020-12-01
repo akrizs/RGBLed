@@ -1,19 +1,19 @@
-#ifndef RGBLed_h
-#define RGBLed_h
+#ifndef RGBwLed_h
+#define RGBwLed_h
 
 #include "Arduino.h"
 
-class RGBLed
+class RGBwLed
 {
 
 public:
-	RGBLed(int r, int g, int b);
-	RGBLed(int r, int g, int b, bool common);
-	RGBLed(int r, int g, int b, bool common, int freq);
+	RGBwLed(int r, int g, int b);
+	RGBwLed(int r, int g, int b, bool common);
+	RGBwLed(int r, int g, int b, bool common, int freq);
 
-	RGBLed(int r, int g, int b, int w);
-	RGBLed(int r, int g, int b, int w, bool common);
-	RGBLed(int r, int g, int b, int w, bool common, int freq);
+	RGBwLed(int r, int g, int b, int w);
+	RGBwLed(int r, int g, int b, int w, bool common);
+	RGBwLed(int r, int g, int b, int w, bool common, int freq);
 
 	void initSequence();
 

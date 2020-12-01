@@ -1,11 +1,12 @@
-#include <RGBLed.h>
+#include <RGBwLed.h>
 
-RGBLed led(11, 10, 9, RGBLed::COMMON_CATHODE);
+RGBwLed led(11, 10, 9, RGBwLed::COMMON_CATHODE);
 
-void setup() { }
+void setup() {}
 
-void loop() {
-	
+void loop()
+{
+
 	// Light off RGB led
 	led.off();
 }
