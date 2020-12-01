@@ -13,20 +13,92 @@ int RGBLed::WHITE[3] = {255, 255, 255};
 bool RGBLed::COMMON_ANODE = true;
 bool RGBLed::COMMON_CATHODE = false;
 
-int RGBLed::FREQ = 280;
+int RGBLed::DEF_RED = 240;
+int RGBLed::DEF_GREEN = 191;
+int RGBLed::DEF_BLUE = 41;
 
-RGBLed::RGBLed(int red, int green, int blue, bool common, int freq = 280)
-	: _red(red), _green(green), _blue(blue), _common(common), _freq(freq)
+bool RGBLed::RGBW = false;
+
+int RGBLed::FREQ = 420;
+
+RGBLed::RGBLed(int r, int g, int b)
+	: _red(r), _green(g), _blue(b), _common(RGBLed::COMMON_CATHODE), _freq(RGBLed::FREQ), _RGBW(false), _CCR(RGBLed::DEF_RED), _CCG(RGBLed::DEF_GREEN), _CCB(RGBLed::DEF_BLUE)
 {
+	analogWriteFreq(_freq);
 	pinMode(_red, OUTPUT);
 	pinMode(_green, OUTPUT);
 	pinMode(_blue, OUTPUT);
-	analogWriteFreq(freq);
+}
+RGBLed::RGBLed(int r, int g, int b, bool common = RGBLed::COMMON_CATHODE)
+	: _red(r), _green(g), _blue(b), _common(common), _freq(RGBLed::FREQ), _RGBW(false), _CCR(RGBLed::DEF_RED), _CCG(RGBLed::DEF_GREEN), _CCB(RGBLed::DEF_BLUE)
+{
+	analogWriteFreq(_freq);
+	pinMode(_red, OUTPUT);
+	pinMode(_green, OUTPUT);
+	pinMode(_blue, OUTPUT);
+}
+
+RGBLed::RGBLed(int r, int g, int b, bool common = RGBLed::COMMON_CATHODE, int freq = RGBLed::FREQ)
+	: _red(r), _green(g), _blue(b), _common(common), _freq(freq), _RGBW(false), _CCR(RGBLed::DEF_RED), _CCG(RGBLed::DEF_GREEN), _CCB(RGBLed::DEF_BLUE)
+{
+	analogWriteFreq(_freq);
+	pinMode(_red, OUTPUT);
+	pinMode(_green, OUTPUT);
+	pinMode(_blue, OUTPUT);
+}
+
+RGBLed::RGBLed(int r, int g, int b, int w)
+	: _red(r), _green(g), _blue(b), _white(w), _common(RGBLed::COMMON_CATHODE), _freq(RGBLed::FREQ), _RGBW(true), _CCR(RGBLed::DEF_RED), _CCG(RGBLed::DEF_GREEN), _CCB(RGBLed::DEF_BLUE)
+{
+	RGBLed::RGBW = true;
+	analogWriteFreq(_freq);
+	pinMode(_red, OUTPUT);
+	pinMode(_green, OUTPUT);
+	pinMode(_blue, OUTPUT);
+	pinMode(_white, OUTPUT);
+}
+
+RGBLed::RGBLed(int r, int g, int b, int w, bool common = RGBLed::COMMON_CATHODE)
+	: _red(r), _green(g), _blue(b), _white(w), _common(common), _freq(RGBLed::FREQ), _RGBW(true), _CCR(RGBLed::DEF_RED), _CCG(RGBLed::DEF_GREEN), _CCB(RGBLed::DEF_BLUE)
+{
+	RGBLed::RGBW = true;
+	analogWriteFreq(_freq);
+	pinMode(_red, OUTPUT);
+	pinMode(_green, OUTPUT);
+	pinMode(_blue, OUTPUT);
+	pinMode(_white, OUTPUT);
+}
+
+RGBLed::RGBLed(int r, int g, int b, int w, bool common = RGBLed::COMMON_CATHODE, int freq = RGBLed::FREQ)
+	: _red(r), _green(g), _blue(b), _white(w), _common(common), _freq(freq), _RGBW(true), _CCR(RGBLed::DEF_RED), _CCG(RGBLed::DEF_GREEN), _CCB(RGBLed::DEF_BLUE)
+{
+	RGBLed::RGBW = true;
+	analogWriteFreq(_freq);
+	pinMode(_red, OUTPUT);
+	pinMode(_green, OUTPUT);
+	pinMode(_blue, OUTPUT);
+	pinMode(_white, OUTPUT);
+}
+
+void RGBLed::on()
+{
+	color(_CCR, _CCG, _CCB);
 }
 
 void RGBLed::off()
 {
-	color(0, 0, 0);
+	if (_common == COMMON_ANODE)
+	{
+		analogWrite(_red, ~0);
+		analogWrite(_green, ~0);
+		analogWrite(_blue, ~0);
+	}
+	else
+	{
+		analogWrite(_red, 0);
+		analogWrite(_green, 0);
+		analogWrite(_blue, 0);
+	}
 }
 
 void RGBLed::brightness(int rgb[3], int brightness)
@@ -87,6 +159,9 @@ void RGBLed::setColor(int red, int green, int blue)
 
 void RGBLed::color(int red, int green, int blue)
 {
+	_CCR = red;
+	_CCG = green;
+	_CCB = blue;
 	if (_common == COMMON_ANODE)
 	{
 		analogWrite(_red, ~red);
@@ -149,4 +224,29 @@ void RGBLed::fade(int red, int green, int blue, int steps, int duration, int val
 	if (blue > 0 && blue <= 255)
 		analogWrite(_blue, blue * brightness);
 	delay((unsigned long)(duration / steps));
+}
+
+void RGBLed::initSequence()
+{
+	// Start by triggering each color for a short period of time.
+
+	off();
+	delay(500);
+	on();
+	delay(1000);
+	off();
+	delay(500);
+	on();
+	delay(1000);
+	off();
+
+	RGBLed::flash(RGBLed::RED, 400, 200);
+	RGBLed::flash(RGBLed::RED, 400, 200);
+	delay(1000);
+	RGBLed::flash(RGBLed::GREEN, 400, 200);
+	RGBLed::flash(RGBLed::GREEN, 400, 200);
+	delay(1000);
+	RGBLed::flash(RGBLed::BLUE, 400, 200);
+	RGBLed::flash(RGBLed::BLUE, 400, 200);
+	delay(1000);
 }

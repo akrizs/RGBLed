@@ -7,8 +7,17 @@ class RGBLed
 {
 
 public:
-	RGBLed(int red, int green, int blue, bool common, int freq);
+	RGBLed(int r, int g, int b);
+	RGBLed(int r, int g, int b, bool common);
+	RGBLed(int r, int g, int b, bool common, int freq);
 
+	RGBLed(int r, int g, int b, int w);
+	RGBLed(int r, int g, int b, int w, bool common);
+	RGBLed(int r, int g, int b, int w, bool common, int freq);
+
+	void initSequence();
+
+	void on();
 	void off();
 
 	void brightness(int rgb[3], int brightness);
@@ -39,11 +48,18 @@ public:
 
 	static int FREQ;
 
+	static int DEF_RED;
+	static int DEF_BLUE;
+	static int DEF_GREEN;
+
 	static bool COMMON_ANODE;
 	static bool COMMON_CATHODE;
 
+	static bool RGBW;
+
 private:
-	int _red, _green, _blue, _common, _freq;
+	int _red, _green, _blue, _white, _common, _freq, _CCR, _CCG, _CCB, _CCW;
+	bool _RGBW;
 	void color(int red, int green, int blue);
 	void blink(int red, int green, int blue, int onDuration, int duration);
 	void intensity(int red, int green, int blue, int brightness);
