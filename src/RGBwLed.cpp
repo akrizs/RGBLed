@@ -1,6 +1,6 @@
 #include "Arduino.h"
 
-#include "RGBLed.h"
+#include "RGBwLed.h"
 
 int RGBwLed::RED[3] = {255, 0, 0};
 int RGBwLed::GREEN[3] = {0, 255, 0};
